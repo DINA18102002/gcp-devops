@@ -13,12 +13,13 @@ steps:
   - name: sonarsource/sonar-scanner-cli
     id: sonar-scan
     entrypoint: bash
+    secretEnv:
+      - SONAR_TOKEN
     env:
       - SONAR_HOST_URL=http://10.10.2.2:9000
     args:
       - -c
       - |
-        echo "Running SonarQube scan"
         sonar-scanner \
           -Dsonar.projectKey=gcp-devops \
           -Dsonar.sources=src \
