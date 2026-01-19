@@ -1,0 +1,31 @@
+options:
+  pool:
+    name: projects/174470645364/locations/asia-south1/workerPools/private-ci-pool
+
+steps:
+- name: python:3.11
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      pip install -r requirements.txt
+      pytest
+
+- name: sonarsource/sonar-scanner-cli
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      sonar-scanner \
+        -Dsonar.projectKey=demo-app \
+        -Dsonar.sources=src \
+        -Dsonar.tests=tests \
+        -Dsonar.python.coverage.reportPaths=coverage.xml \
+        -Dsonar.host.url=http://10.10.2.2:9000 \
+        -Dsonar.login=$$SONAR_TOKEN
+  secretEnv: ["SONAR_TOKEN"]
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/174470645364/secrets/sonarqube-token/versions/latest
+    env: SONAR_TOKEN
