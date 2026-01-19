@@ -1,4 +1,4 @@
-ksteps:
+steps:
   # 1️⃣ Install deps & run tests
   - name: python:3.10
     id: test
@@ -13,6 +13,9 @@ ksteps:
   - name: sonarsource/sonar-scanner-cli
     id: sonar-scan
     entrypoint: bash
+    env:
+      - SONAR_HOST_URL=http://10.10.2.2:9000
+      - SONAR_TOKEN=$(SONAR_TOKEN)
     args:
       - -c
       - |
@@ -33,10 +36,3 @@ availableSecrets:
   secretManager:
     - versionName: projects/174470645364/secrets/sonarqube-token/versions/latest
       env: SONAR_TOKEN
-
-substitutions:
-  _SONAR_HOST_URL: "http://10.10.2.2:9000"
-
-env:
-  - SONAR_HOST_URL=$_SONAR_HOST_URL
-
