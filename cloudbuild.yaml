@@ -24,7 +24,7 @@ steps:
           -Dsonar.sources=src \
           -Dsonar.tests=tests \
           -Dsonar.python.version=3.10 \
-          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.host.url=$$SONAR_HOST_URL \
           -Dsonar.login=$SONAR_TOKEN
 
 options:
