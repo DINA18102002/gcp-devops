@@ -36,3 +36,20 @@ availableSecrets:
   secretManager:
     - versionName: projects/174470645364/secrets/sonarqube-token/versions/latest
       env: SONAR_TOKEN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
