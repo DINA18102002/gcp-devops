@@ -3,6 +3,8 @@ steps:
   - name: python:3.10
     id: test
     entrypoint: bash
+    env:
+      - PYTHONPATH=.
     args:
       - -c
       - |
