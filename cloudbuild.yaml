@@ -29,15 +29,15 @@ steps:
       - -c
       - |
         SONAR_TOKEN=$(cat /workspace/sonar_token.txt)
+
         sonar-scanner \
           -Dsonar.projectKey=gcp-devops \
+          -Dsonar.projectName=gcp-devops \
+          -Dsonar.projectBaseDir=/workspace \
           -Dsonar.sources=src \
           -Dsonar.tests=tests \
+          -Dsonar.language=py \
           -Dsonar.python.version=3.10 \
+          -Dsonar.scm.disabled=true \
           -Dsonar.host.url=http://10.10.2.2:9000 \
           -Dsonar.login=$$SONAR_TOKEN
-
-options:
-  logging: CLOUD_LOGGING_ONLY
-  pool:
-    name: projects/theena-devops/locations/asia-south1/workerPools/private-ci-pool
