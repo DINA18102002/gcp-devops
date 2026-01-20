@@ -39,6 +39,7 @@ steps:
           -Dsonar.language=py \
           -Dsonar.python.version=3.10 \
           -Dsonar.scm.disabled=true \
+          -Dsonar.userHome=/tmp \
           -Dsonar.host.url=http://10.10.2.2:9000 \
           -Dsonar.login=$$SONAR_TOKEN
 options:
