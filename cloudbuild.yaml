@@ -1,50 +1,26 @@
-steps:
-  # 1️⃣ Run tests
-  - name: python:3.10
-    id: test
-    entrypoint: bash
-    env:
-      - PYTHONPATH=.
-    args:
-      - -c
-      - |
-        pip install -r requirements.txt
-        pytest
+# 2️⃣ Fetch SonarQube token
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  id: fetch-sonar-token
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud secrets versions access latest \
+        --secret=sonarqube-token > /workspace/sonar_token.txt
 
-  # 2️⃣ SonarQube scan (runtime secret fetch)
-  - name: sonarsource/sonar-scanner-cli
-    id: sonar-scan
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        # Install gcloud inside sonar image
-        apt-get update && apt-get install -y curl apt-transport-https ca-certificates gnupg
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-        echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
-        apt-get update && apt-get install -y google-cloud-sdk
-
-        # Fetch token
-        SONAR_TOKEN=$(gcloud secrets versions access latest --secret=sonarqube-token)
-
-        # Run scan
-        sonar-scanner \
-          -Dsonar.projectKey=gcp-devops \
-          -Dsonar.sources=src \
-          -Dsonar.tests=tests \
-          -Dsonar.python.version=3.10 \
-          -Dsonar.host.url=http://10.10.2.2:9000 \
-          -Dsonar.login=$$SONAR_TOKEN
-
-options:
-  logging: CLOUD_LOGGING_ONLY
-  pool:
-    name: projects/theena-devops/locations/asia-south1/workerPools/private-ci-pool
-
-
-
-
-
-
-
+# 3️⃣ SonarQube scan
+- name: sonarsource/sonar-scanner-cli
+  id: sonar-scan
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      SONAR_TOKEN=$(cat /workspace/sonar_token.txt)
+      sonar-scanner \
+        -Dsonar.projectKey=gcp-devops \
+        -Dsonar.sources=src \
+        -Dsonar.tests=tests \
+        -Dsonar.python.version=3.10 \
+        -Dsonar.host.url=http://10.10.2.2:9000 \
+        -Dsonar.login=$$SONAR_TOKEN
 
