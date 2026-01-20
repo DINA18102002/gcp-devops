@@ -41,3 +41,7 @@ steps:
           -Dsonar.scm.disabled=true \
           -Dsonar.host.url=http://10.10.2.2:9000 \
           -Dsonar.login=$$SONAR_TOKEN
+options:
+  logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: projects/theena-devops/locations/asia-south1/workerPools/private-ci-pool
