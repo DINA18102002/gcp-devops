@@ -12,13 +12,22 @@ steps:
         pytest
 
   # 2️⃣ SonarQube scan (runtime secret fetch)
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  - name: sonarsource/sonar-scanner-cli
     id: sonar-scan
     entrypoint: bash
     args:
       - -c
       - |
+        # Install gcloud inside sonar image
+        apt-get update && apt-get install -y curl apt-transport-https ca-certificates gnupg
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+        echo "deb https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
+        apt-get update && apt-get install -y google-cloud-sdk
+
+        # Fetch token
         SONAR_TOKEN=$(gcloud secrets versions access latest --secret=sonarqube-token)
+
+        # Run scan
         sonar-scanner \
           -Dsonar.projectKey=gcp-devops \
           -Dsonar.sources=src \
@@ -31,16 +40,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
   pool:
     name: projects/theena-devops/locations/asia-south1/workerPools/private-ci-pool
-
-
-
-
-
-
-
-
-
-
 
 
 
