@@ -11,7 +11,29 @@ steps:
         pip install -r requirements.txt
         pytest
 
-  # 2️⃣ Fetch SonarQube token from Secret Manager
+  # 2️⃣ Build Docker image
+  - name: gcr.io/cloud-builders/docker
+    id: docker-build
+    args:
+      - build
+      - -t
+      - gcp-devops-app:$SHORT_SHA
+      - .
+
+  # 3️⃣ Trivy vulnerability scan
+  - name: aquasec/trivy:0.49.1
+    id: trivy-scan
+    entrypoint: sh
+    args:
+      - -c
+      - |
+        trivy image \
+          --severity HIGH,CRITICAL \
+          --exit-code 1 \
+          gcp-devops-app:$SHORT_SHA
+
+
+  #4️⃣ Fetch SonarQube token from Secret Manager
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     id: fetch-sonar-token
     entrypoint: bash
@@ -21,7 +43,7 @@ steps:
         gcloud secrets versions access latest \
           --secret=sonarqube-token > /workspace/sonar_token.txt
 
-  # 3️⃣ Run SonarQube scan
+  # 5️⃣ Run SonarQube scan
   - name: sonarsource/sonar-scanner-cli
     id: sonar-scan
     entrypoint: bash
