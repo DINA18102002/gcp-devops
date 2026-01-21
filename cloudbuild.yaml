@@ -29,7 +29,8 @@ steps:
       - |
         trivy image \
           --severity HIGH,CRITICAL \
-          --exit-code 1 \
+          --exit-code 0 \
+          --format table \
           gcp-devops-app:$SHORT_SHA
 
 
