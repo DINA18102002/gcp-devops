@@ -1,0 +1,9 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: gcp-devops-pipeline
+description: GCP DevOps pipeline
+serialPipeline:
+  stages:
+    - targetId: dev
+      profiles: []

@@ -1,0 +1,7 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: dev
+description: Dev GKE cluster
+gke:
+  cluster: projects/theena-devops/locations/asia-south1/clusters/dev-gke
