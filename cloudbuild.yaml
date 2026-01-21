@@ -17,7 +17,7 @@ steps:
     args:
       - build
       - -t
-      - gcp-devops-app:$SHORT_SHA
+      - asia-south1-docker.pkg.dev/theena-devops/theena-devops-repo/gcp-devops-app:$SHORT_SHA
       - .
 
   # 3️⃣ Trivy vulnerability scan
@@ -31,10 +31,17 @@ steps:
           --severity HIGH,CRITICAL \
           --exit-code 0 \
           --format table \
-          gcp-devops-app:$SHORT_SHA
+          asia-south1-docker.pkg.dev/theena-devops/theena-devops-repo/gcp-devops-app:$SHORT_SHA
+
+  # 4️⃣Push image to Artifact Registry
+  - name: gcr.io/cloud-builders/docker
+    id: docker-push
+    args:
+      - push
+      - asia-south1-docker.pkg.dev/theena-devops/theena-devops-repo/gcp-devops-app:$SHORT_SHA
 
 
-  #4️⃣ Fetch SonarQube token from Secret Manager
+  #4️⃣5️⃣Fetch SonarQube token from Secret Manager
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     id: fetch-sonar-token
     entrypoint: bash
@@ -44,7 +51,7 @@ steps:
         gcloud secrets versions access latest \
           --secret=sonarqube-token > /workspace/sonar_token.txt
 
-  # 5️⃣ Run SonarQube scan
+  #6️⃣ Run SonarQube scan
   - name: sonarsource/sonar-scanner-cli
     id: sonar-scan
     entrypoint: bash
