@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: app
-          image: asia-south1-docker.pkg.dev/theena-devops/theena-devops-repo/gcp-devops-app
+          image: gcp-devops-app
           ports:
             - containerPort: 8080
