@@ -15,5 +15,6 @@ spec:
       containers:
         - name: app
           image: gcp-devops-app
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
