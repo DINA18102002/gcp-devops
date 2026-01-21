@@ -1,7 +1,5 @@
-apiVersion: skaffold/v4beta6
+apiVersion: skaffold/v2beta29
 kind: Config
-metadata:
-  name: gcp-devops
 deploy:
   kubectl:
     manifests:
