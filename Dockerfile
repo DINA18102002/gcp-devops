@@ -10,3 +10,4 @@ COPY src/ ./src
 EXPOSE 8080
 
 CMD ["python", "src/main.py"]
+
